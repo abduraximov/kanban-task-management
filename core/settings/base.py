@@ -47,6 +47,7 @@ DJANGO_APPS = [
 
 CUSTOM_APPS = [
     "apps.common",
+    "apps.todo",
 ]
 
 THIRD_PARTY_APPS = [
@@ -103,15 +104,23 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": env.str("DB_ENGINE"),
+#         "NAME": env.str("DB_NAME"),
+#         "USER": env.str("DB_USER"),
+#         "PASSWORD": env.get_value("DB_PASSWORD"),
+#         "HOST": env.str("DB_HOST"),
+#         "PORT": env.str("DB_PORT"),
+#         "ATOMIC_REQUESTS": True,
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": env.str("DB_ENGINE"),
-        "NAME": env.str("DB_NAME"),
-        "USER": env.str("DB_USER"),
-        "PASSWORD": env.get_value("DB_PASSWORD"),
-        "HOST": env.str("DB_HOST"),
-        "PORT": env.str("DB_PORT"),
-        "ATOMIC_REQUESTS": True,
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase', # This is where you put the name of the db file.
+                 # If one doesn't exist, it will be created at migration time.
     }
 }
 
