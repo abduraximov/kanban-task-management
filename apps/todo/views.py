@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.todo.serializer import BoardSerializer, BoardDetailSerializer, TaskSerializer
-from apps.todo.models import Board, Task
+from apps.todo.serializer import BoardSerializer, BoardDetailSerializer, TaskSerializer, SubtaskSerializer
+from apps.todo.models import Board, Task, Subtask
 
 
 class BoardAPIView(APIView):
@@ -66,3 +66,28 @@ class TaskDetailAPIView(APIView):
         task = Task.objects.get(id=pk)
         serializer = TaskSerializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MarkSubtaskDone(APIView):
+    def put(self, request, pk):
+        try:
+            subtask = Subtask.objects.get(id=pk, is_completed=False)
+            subtask.is_completed = True
+            subtask.save()
+            serializer = SubtaskSerializer(subtask)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Subtask.DoesNotExist:
+            return Response({"error": "Subtask does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class MarkSubtaskNotDone(APIView):
+    def put(self, request, pk):
+        try:
+            subtask = Subtask.objects.get(id=pk, is_completed=True)
+            subtask.is_completed = False
+            subtask.save()
+            serializer = SubtaskSerializer(subtask)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Subtask.DoesNotExist:
+            return Response({"error": "Subtask does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
