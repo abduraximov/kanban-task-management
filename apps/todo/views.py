@@ -26,6 +26,7 @@ class BoardDetail(APIView):
     def get(self, request, pk):
         board = Board.objects.get(id=pk)
         serializer = BoardDetailSerializer(board)
+        print(serializer.data['board_column'])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):

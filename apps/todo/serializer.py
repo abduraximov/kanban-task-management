@@ -26,6 +26,11 @@ class SubtaskSerializer(serializers.ModelSerializer):
             "is_completed",
         )
 
+    extra_kwargs = {
+        "id": {"read_only": True},
+        "is_completed": {"read_only": True}
+    }
+
 
 class TaskSerializer(serializers.ModelSerializer):
     subtask = SubtaskSerializer(many=True)
@@ -39,6 +44,16 @@ class TaskSerializer(serializers.ModelSerializer):
             "status",
             "subtask",
         )
+
+    def create(self, validated_data):
+        subtask_data = validated_data.pop("subtask", [])
+        print(subtask_data)
+        task = Task.objects.create(**validated_data)
+
+        for subtask in subtask_data:
+            Subtask.objects.create(task=task, **subtask)
+
+        return task
 
 
 class BoardColumnSerializer(serializers.ModelSerializer):
