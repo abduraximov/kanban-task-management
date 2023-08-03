@@ -47,13 +47,24 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         subtask_data = validated_data.pop("subtask", [])
-        print(subtask_data)
         task = Task.objects.create(**validated_data)
 
         for subtask in subtask_data:
             Subtask.objects.create(task=task, **subtask)
 
         return task
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get("description", instance.description)
+        instance.status = validated_data.get("status", instance.status)
+        print(instance.id)
+        subtask_data = validated_data.get("subtask", [])
+        if subtask_data:
+            for subtask in subtask_data:
+                Subtask.objects.create(task=instance, **subtask)
+        instance.save()
+        return instance
 
 
 class BoardColumnSerializer(serializers.ModelSerializer):

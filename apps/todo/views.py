@@ -68,6 +68,21 @@ class TaskDetailAPIView(APIView):
         serializer = TaskSerializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def put(self, request, pk):
+        task = Task.objects.get(id=pk)
+        serializer = TaskSerializer(instance=task, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteSubtaskView(APIView):
+    def delete(self, request, pk):
+        subtask = Subtask.objects.get(id=pk)
+        subtask.delete()
+        return Response({"message": "Subtask deleted successfully. "}, status=status.HTTP_204_NO_CONTENT)
+
 
 class MarkSubtaskDone(APIView):
     def put(self, request, pk):
